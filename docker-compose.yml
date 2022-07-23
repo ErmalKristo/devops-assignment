@@ -1,0 +1,15 @@
+services:
+  frontend-microservice:
+    build:
+      context: ./frontend-microservice
+    environment:
+      - BACKEND_URL=http://dummy-pdf-or-png:3000
+    ports:
+      - 5000:5000
+    volumes:
+      - ./frontend-microservice:/mnt
+  dummy-pdf-or-png:
+    build:
+      context: ./dummy-pdf-or-png
+    ports:
+      - 3000:3000

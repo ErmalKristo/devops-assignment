@@ -11,7 +11,7 @@ resource "google_container_cluster" "test-cluster" {
       cluster_ipv4_cidr_block   = "10.0.0.0/16"
       services_ipv4_cidr_block  = "172.16.0.0/16"
   }
-  default_max_pods_per_node = 10
+  default_max_pods_per_node = 20
   remove_default_node_pool  = true
   initial_node_count        = 1
 }
@@ -20,8 +20,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "pool-${var.GCP_PROJECT_ID}"
   location   = var.GCP_REGION
   cluster    = google_container_cluster.test-cluster.name
-  # Since this is a simple App we are fine with just one node
-  node_count = 1
+  node_count = 2
 
   node_config {
     preemptible  = false
