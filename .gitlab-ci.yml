@@ -10,7 +10,9 @@ before_script:
   - terraform --version
   - mkdir -p ./creds
   - echo $TERRAFORM_BUCKET_SA | base64 -d > ./creds/serviceaccount.json
-  - terraform init
+  - export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/creds/serviceaccount.json"
+  - terraform init -backend-config="bucket=$TF_VAR_GCP_BUCKET"
+  - terraform apply -auto-approve
 
 stages:
   - test
@@ -18,6 +20,12 @@ stages:
 
 test:
   stage: test
+  script:
+    - echo "TEST STAGE"
+    - pwd 
+    - ls
 
-test:
+build:
   stage: build
+  script:
+    - echo "BUILD STAGE"
