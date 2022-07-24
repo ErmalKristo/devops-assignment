@@ -2,12 +2,14 @@ variables:
   CI_REGISTRY: eu.gcr.io
   TF_VAR_GCP_BUCKET: terraform-dummy-pdf-or-png
   TF_VAR_GCP_PROJECT_ID: sre-assignment-ermal-kristo
+  USE_GKE_GCLOUD_AUTH_PLUGIN: "True"
 
 stages:
   - dockerfile_lint
   - test
   - dockerbuild
-  - deploy
+  - deploy-infrastructure
+  - deploy-app
 
 dockerfile lint:
   stage: dockerfile_lint
@@ -49,8 +51,8 @@ docker build:
 
 
 
-deploy:
-  stage: deploy
+deploy infrastructure:
+  stage: deploy-infrastructure
   image:
     name: hashicorp/terraform:light
     entrypoint:
@@ -60,12 +62,31 @@ deploy:
     - cd gcp-infrastructure
     - rm -rf .terraform
     - terraform --version
-    # - mkdir -p ./creds
-    # - echo $TERRAFORM_BUCKET_SA | base64 -d > ./creds/serviceaccount.json
-    # - export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/creds/serviceaccount.json"
-    # - terraform init -backend-config="bucket=$TF_VAR_GCP_BUCKET"
-    # - terraform apply -auto-approve
+    - mkdir -p ./creds
+    - echo $TERRAFORM_BUCKET_SA | base64 -d > ./creds/serviceaccount.json
+    - export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/creds/serviceaccount.json"
   script:
-    - echo "DEPLOY STAGE"
-    - pwd 
-    - ls
+    - terraform init -backend-config="bucket=$TF_VAR_GCP_BUCKET"
+    - terraform apply -auto-approve
+
+deploy app:
+  stage: deploy-app
+  image: google/cloud-sdk
+  before_script:
+    - mkdir -p ./creds
+    - echo $TERRAFORM_BUCKET_SA | base64 -d > ./creds/serviceaccount.json
+    - export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/creds/serviceaccount.json"
+    - apt-get update && apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
+    - gcloud auth activate-service-account --key-file ${GOOGLE_APPLICATION_CREDENTIALS}
+    - gcloud config set project ${TF_VAR_GCP_PROJECT_ID}
+    - gcloud config set compute/zone europe-west3-a
+    - gcloud container clusters get-credentials gke-cluster-sre-assignment-ermal-kristo
+    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+    - mv kustomize /usr/local/bin/
+  script:
+    - cd kube-manifests/overlays/${DEPLOY_ENVIRONMENT}/
+    - mkdir secrets
+    - echo $GCR_VIEWER_KEY | base64 -d > secrets/.dockerconfigjson
+    - 'kubectl patch serviceaccount default -p "{\"imagePullSecrets\": [{\"name\": \"gcr-json-key\"}]}"'
+    - kustomize edit set image FRONTEND-APP=${CI_REGISTRY}/${TF_VAR_GCP_PROJECT_ID}/frontend-microservice:${CI_COMMIT_SHORT_SHA}
+    - kubectl apply -k ./

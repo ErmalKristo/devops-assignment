@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   labels:
     kubernetes.io/metadata.name: devops-assignment
-  name: devops-assignment
+  name: dev-dummy-pdf-png

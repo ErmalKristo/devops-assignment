@@ -10,7 +10,6 @@ COPY . .
 
 USER node
 
-# CMD ["sh", "-c", "tail -f /dev/null"]
 CMD ["node","index.js"]
 
 EXPOSE 5000 9000
