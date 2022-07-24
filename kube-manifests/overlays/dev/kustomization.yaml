@@ -6,8 +6,6 @@ resources:
 - ../../bases
 patchesStrategicMerge:
 - frontend-deployment.yaml
-commonLabels:
-  app: dummy-pdf-png
 vars:
 - fieldref: {}
   name: NAMESPACE
