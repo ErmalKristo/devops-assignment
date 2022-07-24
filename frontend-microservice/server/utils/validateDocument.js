@@ -48,11 +48,17 @@ const isValidPdf = async (bufferFile) => {
 }
 
 const isValidPNG = async (bufferFile) => {
-    const pngFile = PNG.sync.read(bufferFile);
-    if (isNaN(pngFile.height) || isNaN(pngFile.width)) {
-      return false;
+    try {    
+        const pngFile = PNG.sync.read(bufferFile);
+        if (isNaN(pngFile.height) || isNaN(pngFile.width)) {
+        return false;
+        }
+        return true;
+    } catch (e) {
+        logger.error(e.message);
+        return false;  
     }
-    return true;
+
 }
 
 export {getFileType, isMimeSuported, isValidFile}
