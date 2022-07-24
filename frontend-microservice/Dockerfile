@@ -10,13 +10,7 @@ COPY . .
 
 USER node
 
-<<<<<<< HEAD
-CMD ["sh", "-c", "tail -f /dev/null"]
-# CMD ["node","index.js"]
-
-EXPOSE 5000 9000
-=======
+# CMD ["sh", "-c", "tail -f /dev/null"]
 CMD ["node","index.js"]
 
-EXPOSE 3000 9000
->>>>>>> main
+EXPOSE 5000 9000
