@@ -3,6 +3,7 @@ kind: Service
 metadata:
   annotations:
     cloud.google.com/neg: '{"ingress":true}'
+    cloud.google.com/backend-config: '{ "ports": { "checks": "frontend-backendconfig" }}'
   labels:
     app: frontend-deployment
   name: frontend-service
