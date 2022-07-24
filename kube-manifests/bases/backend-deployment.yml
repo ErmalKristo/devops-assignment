@@ -21,8 +21,10 @@ spec:
       labels:
         app: backend-deployment
     spec:
+      imagePullSecrets:
+        - name: gcr-json-key
       containers:
-      - image: eu.gcr.io/GCP_PROJECT_NAME/gitlab-gke-cicd:<VERSION>
+      - image: BACKEND-APP:latest
         imagePullPolicy: IfNotPresent
         name: backend-app
         terminationMessagePath: /dev/termination-log

@@ -19,6 +19,9 @@ images:
 - name: FRONTEND-APP
   newName: //frontend-microservice
   newTag: "123456"
+- name: BACKEND-APP
+  newName: //backend-microservice
+  newTag: "123456"
 
 secretGenerator:
 - files:
