@@ -15,11 +15,10 @@ async function get(req, res, next) {
             throw new Error('Got unsuported type of document: '+fileMeta.mime);
         }
 
-        
         if(!await validateDocs.isValidFile(fileData.data)) {
             throw new Error('Got invalid file from backend!');
         }
-        logger.error('Passed file validation');
+        
         const downloadedDocument = Buffer.from(fileData.data, 'base64');
         res.writeHead(200, {
             'Content-Disposition': `attachment; filename="${fileName}"`,

@@ -6,3 +6,6 @@ resources:
 - frontend-service.yaml
 - frontend-backendConfig.yml
 - frontend-ingress.yaml 
+- backend-deployment.yml 
+- backend-service.yaml
+- backend-ingress.yaml

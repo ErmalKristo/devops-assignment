@@ -88,4 +88,5 @@ deploy app:
     - echo $GCR_VIEWER_KEY | base64 -d > secrets/.dockerconfigjson
     - 'kubectl patch serviceaccount default -p "{\"imagePullSecrets\": [{\"name\": \"gcr-json-key\"}]}"'
     - kustomize edit set image FRONTEND-APP=${CI_REGISTRY}/${TF_VAR_GCP_PROJECT_ID}/frontend-microservice:${CI_COMMIT_SHORT_SHA}
+    - kustomize edit set image BACKEND-APP=${CI_REGISTRY}/${TF_VAR_GCP_PROJECT_ID}/dummy-pdf-or-png:${CI_COMMIT_SHORT_SHA}
     - kubectl apply -k ./

@@ -3,10 +3,9 @@ kind: Service
 metadata:
   annotations:
     cloud.google.com/neg: '{"ingress":true}'
-    cloud.google.com/backend-config: '{ "ports": { "checks": "frontend-backendconfig" }}'
   labels:
-    app: frontend-deployment
-  name: frontend-service
+    app: backend-deployment
+  name: backend-service
 spec:
   allocateLoadBalancerNodePorts: true
   externalTrafficPolicy: Cluster
@@ -18,12 +17,8 @@ spec:
   - name: app
     port: 80
     protocol: TCP
-    targetPort: 5000
-  - name: checks
-    port: 9000
-    protocol: TCP
-    targetPort: 9000
+    targetPort: 3000
   selector:
-    app: frontend-deployment
+    app: backend-deployment
   sessionAffinity: None
   type: LoadBalancer
