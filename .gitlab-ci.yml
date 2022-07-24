@@ -22,12 +22,11 @@ dockerfile lint:
 
 test:
   stage: test
-  image: docker:stable
-  services:
-    - docker:dind
+  image: node:18.6.0-alpine3.16
   script:
-    - docker build -t frontend-microservice:${CI_COMMIT_SHORT_SHA} ./frontend-microservice/
-    - docker run --entrypoint 'sh' frontend-microservice:${CI_COMMIT_SHORT_SHA} -c '/usr/local/bin/npm run test-jest'
+    - cd frontend-microservice
+    - npm install
+    - npm run test-jest
 
 docker build:
   stage: dockerbuild
