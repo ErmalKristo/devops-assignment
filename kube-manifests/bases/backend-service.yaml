@@ -7,8 +7,6 @@ metadata:
     app: backend-deployment
   name: backend-service
 spec:
-  allocateLoadBalancerNodePorts: true
-  externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
   ipFamilies:
   - IPv4
@@ -21,4 +19,4 @@ spec:
   selector:
     app: backend-deployment
   sessionAffinity: None
-  type: LoadBalancer
+  type: ClusterIP
